@@ -28,8 +28,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         let autorizado = CLLocationManager.authorizationStatus()
         if autorizado == CLAuthorizationStatus.NotDetermined {
-            self.localizador?.startUpdatingLocation()
+            self.localizador?.requestWhenInUseAuthorization()
         }
+        self.localizador?.startUpdatingLocation()
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -46,12 +47,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         self.txtLong.text = "\(ubicacion?.coordinate.longitude)"
         //TODO: determinar si se dejan de tomar lecturas
         self.colocarMapa(ubicacion!)
+        
     }
     
     func colocarMapa(ubicacion:CLLocation){
+        //let ubicacionFake = CLLocationCoordinate2D(latitude: 19.323495, longitude: -99.1864588)
         let laCoordenada = ubicacion.coordinate
         let region = MKCoordinateRegionMakeWithDistance(laCoordenada, 1000, 1000)
         self.elMapa.setRegion(region, animated: true)
+        let losPines = self.elMapa.annotations
+        self.elMapa.removeAnnotations(losPines)
+        let elPin = ElPin(title: "Ud.EstaAquí", subtitle: nil, coordinate: laCoordenada)
+        self.elMapa.addAnnotation(elPin)
         
     }
 
